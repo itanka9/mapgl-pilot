@@ -6,7 +6,8 @@ interface StoreEvents {
     'waypointAdded': Waypoint,
     'transitionAdded': Transition,
     'playbackState': PlaybackState,
-    'titleChanged': string
+    'titleChanged': string,
+    'removeWaypoint': Element,
 }
 
 type Element = Waypoint | Transition;
@@ -27,7 +28,7 @@ class Store extends Evented<StoreEvents> {
         this.title = '';
     }
 
-    insertWaypoint (wp: Omit<Waypoint, 'id' | 'type'>) {
+    insertWaypoint(wp: Omit<Waypoint, 'id' | 'type'>) {
         const lastWp = this.waypoints[this.waypoints.length - 1];
         if (lastWp && lastWp.type === 'waypoint' && waypointEqual(lastWp, wp)) {
             return;
@@ -38,7 +39,7 @@ class Store extends Evented<StoreEvents> {
         this.addWaypoint(wp);
     }
 
-    getById (id: number) {
+    getById(id: number) {
         return this.waypoints[id];
     }
 
@@ -54,18 +55,24 @@ class Store extends Evented<StoreEvents> {
         this.emit('titleChanged', this.title);
     }
 
+    remove(element: Element) {
+        this.waypoints = this.waypoints.filter(waypoint => waypoint.id !== element.id);
+        this.emit('removeWaypoint', element);
+        console.log(this.waypoints)
+    }
+
     getTitle() {
         return this.title;
     }
 
-    serialize (): object {
+    serialize(): object {
         return {
             title: this.title,
             waypoints: JSON.parse(JSON.stringify(this.waypoints))
         }
     }
 
-    deserialize (serialized: any) {
+    deserialize(serialized: any) {
         this.waypoints = [];
         this.title = '';
         for (const e of serialized.waypoints) {
@@ -81,7 +88,7 @@ class Store extends Evented<StoreEvents> {
         this.setTitle(serialized.title);
     }
 
-    setPlaybackState (state: PlaybackState) {
+    setPlaybackState(state: PlaybackState) {
         if (this.playbackState === state) {
             return;
         }
@@ -89,7 +96,7 @@ class Store extends Evented<StoreEvents> {
         this.emit('playbackState', state);
     }
 
-    getPlaybackState () {
+    getPlaybackState() {
         return this.playbackState;
     }
 
@@ -98,7 +105,7 @@ class Store extends Evented<StoreEvents> {
         return waypoints[waypoints.length - 2] as Waypoint
     }
 
-    private addWaypoint (wp: Omit<Waypoint, 'id' | 'type'>) {
+    private addWaypoint(wp: Omit<Waypoint, 'id' | 'type'>) {
         const newWp: Waypoint = {
             type: 'waypoint',
             id: this.waypoints.length,
