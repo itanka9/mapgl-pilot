@@ -86,6 +86,16 @@
                 margin-left: 12px;
             }
 
+            #playback-controls .button {
+                cursor: pointer;
+            } 
+            
+            #playback-controls .disabled {
+                cursor: auto;
+                pointer-events: none;
+                color: #ccc;
+            } 
+
             .checkpoint, .transition {
                 padding: 8px;
                 font-size: 10px;
@@ -102,7 +112,6 @@
                 border: solid 1px green;
             }
 
-
             .transition {
                 background-color: #e8e8ec;
             }
@@ -112,13 +121,7 @@
     <div id="app">
         <div id="left">
             <div id="toolbar">
-                <span id="playback-controls">
-                    <span class="material-icons-outlined">fiber_manual_record</span>
-                    <span class="material-icons-outlined">play_arrow</span>
-                    <span class="material-icons-outlined">pause</span>
-
-                    <span id="time">00:00:00</span>
-                </span>
+                <div id="playback-controls"></div>
                 <div class="vsplit"></div>
               
                 <button>Чек-поинт</button>
@@ -143,9 +146,6 @@
         <div id="right">
             <h3 id="steps-title">Список шагов</h3>
             <div id="steps">
-                <!-- div class="transition">
-                    <label>Duration</label><input class="duration" size="6" value="2000">
-                </div -->
             </div>
         </div>
     </div>

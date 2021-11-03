@@ -1,17 +1,20 @@
-import { LngLat } from "./datatypes/lnglat";
-
+/**
+ * Опорная точка
+ */
 export interface Waypoint {
     type: 'waypoint',
     id: number,
-    center: LngLat,
+    center: number[],
     zoom: number,
     pitch: number,
     rotation: number,
-    duration: number,
-    marker: any;
-    line: any;
+    marker?: any;
+    line?: any;
 }
 
+/**
+ * Переход между опорными точками
+ */
 export interface Transition {
     type: 'transition',
     id: number,

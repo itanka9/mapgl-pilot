@@ -1,11 +1,10 @@
 import { load } from '@2gis/mapgl';
 import { Map } from '@2gis/mapgl/types';
 import { store } from './store';
-import { Waypoint } from './types';
+import { Transition, Waypoint } from './types';
 import { WaypointList } from './waypoint-list';
-
 import { LngLat } from './datatypes/lnglat';
-
+import { PlaybackControls } from './playback-controls';
 import { WaypointMarker } from './waypoint-marker';
 import { WaypointPatch } from './waypoint-path';
 
@@ -15,7 +14,7 @@ export let map: Map;
 async function start() {
     const mapgl = await load();
 
-    map = window.map = new mapgl.Map('map', {
+    map = (window as any).map = new mapgl.Map('map', {
         key: '042b5b75-f847-4f2a-b695-b5f58adc9dfd',
         center: [55.31878, 25.23584],
         zoom: 13,
@@ -28,9 +27,32 @@ async function start() {
     WaypointMarker(map, mapgl);
     WaypointPatch(map, mapgl);
 
+    PlaybackControls(document.getElementById('playback-controls'));
+
+    store.on('waypointAdded', saveStore);
+    store.on('transitionAdded', saveStore);
+    store.on('playbackState', state => {
+        if (state === 'play') {
+            playback(map);
+        }
+    })
+
+    resetStore();
 }
 
 start();
+
+function resetStore () {
+    const serialized = localStorage.getItem('store');
+    if (!serialized) {
+        return
+    }
+    store.deserialize(JSON.parse(serialized));
+}
+
+function saveStore () {
+    localStorage.setItem('store', JSON.stringify(store.serialize()));
+}
 
 const pressedKeys = {};
 
@@ -70,12 +92,11 @@ function getThrust(dt, target) {
 
 function appKeyHandler (map: Map, key: string) {
     if (key === 'Space') {
-        store.addWaypoint({
-            center: LngLat.fromArray(map.getCenter()),
+        store.insertWaypoint({
+            center: map.getCenter(),
             zoom: map.getZoom(),
             rotation: map.getRotation(),
             pitch: map.getPitch(),
-            duration: 8000
         })
     }
 }
@@ -106,17 +127,44 @@ function processPressedKeys (map) {
     }
 }
 
-export function applyWaypoint(map: Map, wp: Waypoint) {
-    map.setCenter(wp.center.toArray());
-    map.setZoom(wp.zoom);
-    map.setPitch(wp.pitch);
-    map.setRotation(wp.rotation);
+function idlePromise(map: Map) {
+    return new Promise<void>(resolve => {
+        setTimeout(() => {
+            if ((map as any)._impl.core.isIdle()) {
+                resolve()
+            } else {
+                map.once('idle', () => resolve())
+            }
+        }, 100)
+    })
 }
 
-export function moveToWaypoint(map: Map, prev: Waypoint, wp: Waypoint) {
-    const { duration } = wp;
-    map.setCenter(wp.center.toArray(), { duration });
-    map.setZoom(wp.zoom, { duration });
-    map.setRotation(wp.rotation, { duration });
-    map.setPitch(wp.pitch, { duration });
+export async function applyWaypoint(map: Map, wp: Waypoint, duration = 0) {
+    const options = duration ? { duration } : undefined;
+    map.setCenter(wp.center, options);
+    map.setZoom(wp.zoom, options);
+    map.setPitch(wp.pitch, options);
+    map.setRotation(wp.rotation, options);
+    return idlePromise(map);
+}
+
+export async function applyTransition(map: Map, t: Transition) {
+    const wpFrom = store.getById(t.id - 1);
+    const wpTo = store.getById(t.id + 1);
+    if (wpFrom?.type !== 'waypoint' || wpTo?.type !== 'waypoint') {
+        return
+    }
+    await applyWaypoint(map, wpFrom);
+    await applyWaypoint(map, wpTo, t.duration);
+}
+
+export async function playback (map: Map) {
+    for (const e of store.getItems()) {
+        if (store.getPlaybackState() !== 'play') {
+            return;
+        }
+        if (e.type === 'transition') {
+            await applyTransition(map, e);
+        }
+    }
 }
