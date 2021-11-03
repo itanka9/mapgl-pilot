@@ -11,6 +11,10 @@ export class LngLat {
         return `${this.lng.toFixed(6)}, ${this.lat.toFixed(6)}`
     }
 
+    toArray () {
+        return [this.lng, this.lat]
+    }
+
     static parse (ll: string): LngLat {
         const parts = ll.split(',').map(Number);
         return new LngLat(parts[0], parts[1]);
