@@ -1,10 +1,12 @@
+import { waypointEqual } from './datatypes/waypoint';
 import { Evented } from './evented';
 import { Waypoint, Transition } from './types';
 
 interface StoreEvents {
     'waypointAdded': Waypoint,
     'transitionAdded': Transition,
-    'playbackState': PlaybackState
+    'playbackState': PlaybackState,
+    'titleChanged': string
 }
 
 type Element = Waypoint | Transition;
@@ -16,14 +18,20 @@ class Store extends Evented<StoreEvents> {
 
     private waypoints: Element[];
     private playbackState: PlaybackState;
+    private title: string;
 
     constructor() {
         super();
         this.waypoints = [];
         this.playbackState = 'stop';
+        this.title = '';
     }
 
     insertWaypoint (wp: Omit<Waypoint, 'id' | 'type'>) {
+        const lastWp = this.waypoints[this.waypoints.length - 1];
+        if (lastWp && lastWp.type === 'waypoint' && waypointEqual(lastWp, wp)) {
+            return;
+        }
         if (this.waypoints.length !== 0) {
             this.addTransition({ duration: 5000 })
         }
@@ -38,13 +46,28 @@ class Store extends Evented<StoreEvents> {
         return this.waypoints;
     }
 
+    setTitle(newTitle: string) {
+        if (newTitle === this.title) {
+            return;
+        }
+        this.title = newTitle;
+        this.emit('titleChanged', this.title);
+    }
+
+    getTitle() {
+        return this.title;
+    }
+
     serialize (): object {
         return {
+            title: this.title,
             waypoints: JSON.parse(JSON.stringify(this.waypoints))
         }
     }
 
     deserialize (serialized: any) {
+        this.waypoints = [];
+        this.title = '';
         for (const e of serialized.waypoints) {
             switch (e.type) {
                 case 'waypoint':
@@ -55,7 +78,7 @@ class Store extends Evented<StoreEvents> {
                     break;
             }
         }
-        console.log(this.waypoints)
+        this.setTitle(serialized.title);
     }
 
     setPlaybackState (state: PlaybackState) {

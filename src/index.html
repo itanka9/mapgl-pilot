@@ -57,6 +57,11 @@
                 pointer-events: none;
             }
 
+            #steps {
+                overflow-y: auto;
+                max-height: calc(100% - 48px);
+            }
+
             #time {
                 margin-left: 12px;
             }
@@ -115,6 +120,63 @@
             .transition {
                 background-color: #e8e8ec;
             }
+
+            #popup-textarea-dialog {
+                z-index: 10;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                height: 60%;
+                width: 500px;
+                background-color: #fff;
+                padding: 12px;
+                flex-direction: column;
+                display: none;
+            }
+
+            #popup-dialog-overlay {
+                z-index: 9;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background-color: #00000044;
+                display: none;
+            }
+
+            .dialog-visible {
+                display: flex !important;
+            }
+
+            #popup-textarea-dialog .dialog-head, #popup-textarea-dialog .dialog-foot {
+                display: flex;
+                align-items: center;
+                height: 48px;
+                padding: 12px;
+            }
+
+            #popup-textarea-dialog .dialog-foot {
+                height: 32px;
+            }
+
+            #popup-textarea-dialog .button {
+                cursor: pointer;
+            }
+
+            #popup-textarea-dialog .dialog-content {
+                flex-grow: 1;
+            }
+
+            #popup-textarea-dialog .dialog-caption {
+                display: flex;
+                flex-direction: column;
+            }
+
+            #popup-textarea-dialog .dialog-caption h3 {
+                margin: 4px 0;
+            }
         </style>        
     </head>
     <body>
@@ -123,15 +185,9 @@
             <div id="toolbar">
                 <div id="playback-controls"></div>
                 <div class="vsplit"></div>
-              
-                <button>Добавить шаг</button>
-
+                <div id="step-controls"></div>
                 <div class="spread"></div>
-
-                <input id="title" placeholder="Название" size=45>
-                
-                <button>Импорт</button>
-                <button>Экспорт</button>
+                <div id="import-export"></div>
             </div>
             <div id="map-wrap">
                 <div id="map"></div>

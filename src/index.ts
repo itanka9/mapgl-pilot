@@ -7,6 +7,8 @@ import { LngLat } from './datatypes/lnglat';
 import { PlaybackControls } from './playback-controls';
 import { WaypointMarker } from './waypoint-marker';
 import { WaypointPath } from './waypoint-path';
+import { ImportExport } from './import-export';
+import { StepControls } from './step-controls';
 
 
 export let map: Map;
@@ -27,8 +29,11 @@ async function start() {
     WaypointMarker(map, mapgl);
     WaypointPath(map, mapgl);
 
-    PlaybackControls(document.getElementById('playback-controls'));
+    ImportExport(document.getElementById('import-export'));
 
+    PlaybackControls(document.getElementById('playback-controls'));
+    StepControls(document.getElementById('step-controls'));
+    
     store.on('waypointAdded', saveStore);
     store.on('transitionAdded', saveStore);
     store.on('playbackState', state => {

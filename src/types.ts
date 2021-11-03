@@ -8,8 +8,6 @@ export interface Waypoint {
     zoom: number,
     pitch: number,
     rotation: number,
-    marker?: any;
-    line?: any;
 }
 
 /**
