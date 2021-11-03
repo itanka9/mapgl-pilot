@@ -96,7 +96,7 @@ function processPressedKeys (map) {
 }
 
 export function applyWaypoint(map: Map, wp: Waypoint) {
-    map.setCenter(wp.center);
+    map.setCenter(wp.center.toArray());
     map.setZoom(wp.zoom);
     map.setPitch(wp.pitch);
     map.setRotation(wp.rotation);
@@ -104,7 +104,7 @@ export function applyWaypoint(map: Map, wp: Waypoint) {
 
 export function moveToWaypoint(map: Map, prev: Waypoint, wp: Waypoint) {
     const { duration } = wp;
-    map.setCenter(wp.center, { duration });
+    map.setCenter(wp.center.toArray(), { duration });
     map.setZoom(wp.zoom, { duration });
     map.setRotation(wp.rotation, { duration });
     map.setPitch(wp.pitch, { duration });
