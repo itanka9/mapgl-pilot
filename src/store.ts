@@ -10,6 +10,7 @@ interface StoreEvents {
     'playbackState': PlaybackState,
     'titleChanged': string,
     'removeWaypoint': Element,
+    'refreshWaypoint': void,
 }
 
 type Element = Waypoint | Transition;
@@ -22,12 +23,16 @@ class Store extends Evented<StoreEvents> {
     private waypoints: Element[];
     private playbackState: PlaybackState;
     private title: string;
+    public moving:any;
+    public movingWp: Waypoint | undefined;
 
     constructor() {
         super();
         this.waypoints = [];
         this.playbackState = 'stop';
         this.title = '';
+        this.moving;
+        this.movingWp = undefined;
     }
 
     insertWaypoint(wp: Omit<Waypoint, 'id' | 'type'>) {
@@ -60,7 +65,6 @@ class Store extends Evented<StoreEvents> {
     remove(element: Element) {
         this.waypoints = this.waypoints.filter(waypoint => waypoint.id !== element.id);
         this.emit('removeWaypoint', element);
-        console.log(this.waypoints)
     }
 
     getTitle() {
