@@ -1,0 +1,188 @@
+<html>
+    <head>
+        <title>MapGL Pilot</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                font-family: sans-serif;
+                color: #333;
+            }
+
+            #app {
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                height: 100%;
+            }
+
+            #right {
+                width: 300px;
+                height: 100%;
+                padding: 0 8px;
+            }
+
+            #left {
+                width: calc(100% - 300px);
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #toolbar {
+                height: 48px;
+                display: flex;
+                align-items: center;
+            }
+
+            #map-wrap {
+                position: relative;
+                flex-grow: 1;
+            }
+
+            #map, #overlay {
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                position: absolute;
+            }
+
+            #overlay {
+                z-index: 2;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                pointer-events: none;
+            }
+
+            #time {
+                margin-left: 12px;
+            }
+
+            .vsplit {
+                display: block;
+                height: 12px;
+                margin: 12px;
+                border-left: solid 1px gray;
+            }
+
+            .spread {
+                flex-grow: 1;
+            }
+
+            #steps-title {
+                margin: 0;
+                padding: 0;
+                height: 48px;
+                display: flex;
+                align-items: center;
+            }
+
+            #playback-controls {
+                display: flex;
+                align-items: center;
+                margin-left: 12px;
+            }
+
+            .checkpoint, .transition {
+                padding: 8px;
+                font-size: 10px;
+                border: solid 1px #eee;
+                cursor: pointer;
+            }
+
+            .checkpoint label, .transition label {
+                font-size: 11px;
+                margin-left: 4px;
+            }
+
+            .selected {
+                border: solid 1px green;
+            }
+
+
+            .transition {
+                background-color: #e8e8ec;
+            }
+        </style>        
+    </head>
+<body>
+    <div id="app">
+        <div id="left">
+            <div id="toolbar">
+                <span id="playback-controls">
+                    <span class="material-icons-outlined">fiber_manual_record</span>
+                    <span class="material-icons-outlined">play_arrow</span>
+                    <span class="material-icons-outlined">pause</span>
+
+                    <span id="time">00:00:00</span>
+                </span>
+                <div class="vsplit"></div>
+              
+                <button>Чек-поинт</button>
+
+                <div class="spread"></div>
+
+                <input id="title" placeholder="Название" size=45>
+                
+                <button>Импорт</button>
+                <button>Экспорт</button>
+            </div>
+            <div id="map-wrap">
+                <div id="map"></div>
+                <div id="overlay">
+                    <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 25 0 L 25 20 M 25 30 L 25 50" stroke="black" />
+                        <path d="M 0 25 L 20 25 M 30 25 L 50 25" stroke="black" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div id="right">
+            <h3 id="steps-title">Список шагов</h3>
+            <div id="steps">
+                <div class="checkpoint">
+                    <label>Lnglat</label><input class="latng" size="12" value="1.11111, 1.1111">
+                    <label>Rot</label><input class="rotation" size="4" value="34">
+                    <label>Pitch</label><input class="pitch" size="4" value="87">
+                </div>
+                <div class="transition">
+                    <label>Duration</label><input class="duration" size="6" value="2000">
+                </div>
+                <div class="checkpoint selected">
+                    <label>Lnglat</label><input class="latng" size="12" value="1.11111, 1.1111">
+                    <label>Rot</label><input class="rotation" size="4" value="34">
+                    <label>Pitch</label><input class="pitch" size="4" value="87">
+                </div>
+                <div class="transition">
+                    <label>Duration</label><input class="duration" size="6" value="2000">
+                </div>
+                <div class="checkpoint">
+                    <label>Lnglat</label><input class="latng" size="12" value="1.11111, 1.1111">
+                    <label>Rot</label><input class="rotation" size="4" value="34">
+                    <label>Pitch</label><input class="pitch" size="4" value="87">
+                </div>
+                <div class="transition">
+                    <label>Duration</label><input class="duration" size="6" value="2000">
+                </div>
+                <div class="checkpoint">
+                    <label>Lnglat</label><input class="latng" size="12" value="1.11111, 1.1111">
+                    <label>Rot</label><input class="rotation" size="4" value="34">
+                    <label>Pitch</label><input class="pitch" size="4" value="87">
+                </div>                
+            </div>
+        </div>
+    </div>
+    <script src="https://mapgl.2gis.com/api/js/v1"></script>
+    <script>
+        const map = new mapgl.Map('map', {
+            center: [55.31878, 25.23584],
+            zoom: 13,
+            key: '042b5b75-f847-4f2a-b695-b5f58adc9dfd',
+            style: 'c080bb6a-8134-4993-93a1-5b4d8c36a59b'
+        });
+    </script>
+</body>
+</html>
