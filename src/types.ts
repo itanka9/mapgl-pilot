@@ -18,3 +18,12 @@ export interface Transition {
     id: number,
     duration: number
 }
+
+type CommandType = 'center' | 'zoom' | 'rotation' | 'pitch';
+
+export interface Command {
+    type: CommandType,
+    args: Array<any>,
+    start: number,
+    duration: number
+}

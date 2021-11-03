@@ -1,4 +1,5 @@
 import { applyTransition, map } from '.';
+import { store } from './store';
 import { Transition } from './types';
 import { store } from './store';
 
@@ -12,6 +13,11 @@ export function TransitionCard(t: Transition) {
     const remove = (t) => {
         store.remove(t);
     }
+
+    root.querySelector('.duration').addEventListener('change', ev => {
+        store.updateTransition(t.id, +ev.target.value);
+    })
+
     root.addEventListener('click', () => {
         applyTransition(map, t);
     });
