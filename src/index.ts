@@ -33,7 +33,7 @@ async function start() {
 
     PlaybackControls(document.getElementById('playback-controls'));
     StepControls(document.getElementById('step-controls'));
-    
+
     store.on('waypointAdded', saveStore);
     store.on('transitionAdded', saveStore);
     store.on('playbackState', state => {
@@ -42,12 +42,20 @@ async function start() {
         }
     })
 
+    map.on('move', (e) => {
+        map.getCenter(); if (store.moving) {
+            store.moving.setCoordinates(map.getCenter());
+            store.movingWp.center = map.getCenter();
+            store.emit('refreshWaypoint');
+        }
+    })
+
     resetStore();
 }
 
 start();
 
-function resetStore () {
+function resetStore() {
     const serialized = localStorage.getItem('store');
     if (!serialized) {
         return
@@ -55,13 +63,13 @@ function resetStore () {
     store.deserialize(JSON.parse(serialized));
 }
 
-function saveStore () {
+function saveStore() {
     localStorage.setItem('store', JSON.stringify(store.serialize()));
 }
 
 const pressedKeys = {};
 
-function installMoveHandler (map) {
+function installMoveHandler(map) {
     document.addEventListener('keydown', function (ev) {
         if (pressedKeys[ev.code]) {
             return;
@@ -91,11 +99,11 @@ function getThrust(dt, target) {
             return 4 * Math.min(5, (dt / 1000) ** 2.5);
         case 'attack':
             return 4 * Math.min(5, (dt / 1000) ** 2.5);
-    
+
     }
 }
 
-function appKeyHandler (map: Map, key: string) {
+function appKeyHandler(map: Map, key: string) {
     if (key === 'Space') {
         store.insertWaypoint({
             center: map.getCenter(),
@@ -106,7 +114,7 @@ function appKeyHandler (map: Map, key: string) {
     }
 }
 
-function processPressedKeys (map) {
+function processPressedKeys(map) {
     const duration = 200;
     for (const key in pressedKeys) {
         const { pressStart } = pressedKeys[key]
@@ -128,7 +136,7 @@ function processPressedKeys (map) {
         }
         if (key === 'KeyF') {
             map.setPitch(map.getPitch() - getThrust(dt, 'attack'), { duration });
-        }    
+        }
     }
 }
 
@@ -163,7 +171,7 @@ export async function applyTransition(map: Map, t: Transition) {
     await applyWaypoint(map, wpTo, t.duration);
 }
 
-export async function playback (map: Map) {
+export async function playback(map: Map) {
     for (const e of store.getItems()) {
         if (store.getPlaybackState() !== 'play') {
             return;
