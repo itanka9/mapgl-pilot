@@ -9,10 +9,15 @@ export function WaypointMarker(map: Map, mapgl: any) {
         const marker = new mapgl.Marker(map, {
             icon: cameraPoint,
             size: [32, 32],
-            anchor: [16,16],
+            anchor: [16, 16],
             coordinates: wp.center
         });
         markers[wp.id] = marker;
-        // wp.marker=marker;
+    })
+
+    store.on('removeWaypoint', (wp: Waypoint) => {
+        markers[wp.id] && markers[wp.id].destroy();
+        delete markers[wp.id];
+     
     })
 }
