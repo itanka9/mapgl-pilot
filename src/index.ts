@@ -3,20 +3,21 @@ import { Map } from '@2gis/mapgl/types';
 import { store } from './store';
 import { Waypoint } from './types';
 import { WaypointList } from './waypoint-list';
+import { LngLat } from './datatypes/lnglat';
 
 export let map: Map;
 
 async function start() {
     const mapgl = await load();
 
-    map = window.map = new mapgl.Map('container', {
+    map = window.map = new mapgl.Map('map', {
         key: '042b5b75-f847-4f2a-b695-b5f58adc9dfd',
         center: [55.31878, 25.23584],
         zoom: 13,
     });
 
     installMoveHandler(map);
-    WaypointList(document.getElementById('side'));
+    WaypointList(document.getElementById('steps'));
 }
 
 start();
@@ -59,7 +60,7 @@ function getThrust(dt, target) {
 function appKeyHandler (map: Map, key: string) {
     if (key === 'Space') {
         store.addWaypoint({
-            center: map.getCenter(),
+            center: LngLat.fromArray(map.getCenter()),
             zoom: map.getZoom(),
             rotation: map.getRotation(),
             pitch: map.getPitch(),
