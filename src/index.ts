@@ -3,7 +3,12 @@ import { Map } from '@2gis/mapgl/types';
 import { store } from './store';
 import { Waypoint } from './types';
 import { WaypointList } from './waypoint-list';
+
 import { LngLat } from './datatypes/lnglat';
+
+import { WaypointMarker } from './waypoint-marker';
+import { WaypointPatch } from './waypoint-path';
+
 
 export let map: Map;
 
@@ -17,7 +22,12 @@ async function start() {
     });
 
     installMoveHandler(map);
+
     WaypointList(document.getElementById('steps'));
+
+    WaypointMarker(map, mapgl);
+    WaypointPatch(map, mapgl);
+
 }
 
 start();
@@ -40,6 +50,7 @@ function installMoveHandler (map) {
     })
     setInterval(() => processPressedKeys(map), 150);
 }
+
 
 function now() {
     return new Date().getTime()

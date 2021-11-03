@@ -7,7 +7,9 @@ export interface Waypoint {
     zoom: number,
     pitch: number,
     rotation: number,
-    duration: number
+    duration: number,
+    marker: any;
+    line: any;
 }
 
 export interface Transition {
