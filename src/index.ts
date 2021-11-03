@@ -36,6 +36,7 @@ async function start() {
     
     store.on('waypointAdded', saveStore);
     store.on('transitionAdded', saveStore);
+    store.on('transitionChanged', saveStore);
     store.on('playbackState', state => {
         if (state === 'play') {
             playback(map);
