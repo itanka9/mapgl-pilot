@@ -167,4 +167,5 @@ export async function playback (map: Map) {
             await applyTransition(map, e);
         }
     }
+    store.setPlaybackState('stop')
 }
