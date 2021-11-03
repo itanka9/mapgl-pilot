@@ -6,7 +6,7 @@ import { WaypointList } from './waypoint-list';
 import { LngLat } from './datatypes/lnglat';
 import { PlaybackControls } from './playback-controls';
 import { WaypointMarker } from './waypoint-marker';
-import { WaypointPatch } from './waypoint-path';
+import { WaypointPath } from './waypoint-path';
 
 
 export let map: Map;
@@ -25,7 +25,7 @@ async function start() {
     WaypointList(document.getElementById('steps'));
 
     WaypointMarker(map, mapgl);
-    WaypointPatch(map, mapgl);
+    WaypointPath(map, mapgl);
 
     PlaybackControls(document.getElementById('playback-controls'));
 

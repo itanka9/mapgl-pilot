@@ -8,9 +8,10 @@ export function WaypointCard(wp: Waypoint) {
     root.classList.add('checkpoint');
     const center = LngLat.fromArray(wp.center)
     root.innerHTML = `
-        <label>Lnglat</label><input class="latng" size="12" value="${center.toString()}">
-        <label>Rot</label><input class="rotation" size="4" value="${angleToString(wp.rotation)}">
-        <label>Pitch</label><input class="pitch" size="4" value="${angleToString(wp.pitch)}">
+        <label>Коорд.</label><input class="latng" size="20" value="${center.toString()}"> <br />
+        <label>Зум</label><input class="zoom" size="4" value="${angleToString(wp.zoom)}">
+        <label>Вр.</label><input class="rotation" size="4" value="${angleToString(wp.rotation)}">
+        <label>Накл.</label><input class="pitch" size="4" value="${angleToString(wp.pitch)}">
     `;
 
     root.addEventListener('click', () => {

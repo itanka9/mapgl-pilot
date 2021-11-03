@@ -5,7 +5,7 @@ export function TransitionCard(t: Transition) {
     const root = document.createElement('div');
     root.classList.add('transition');
     root.innerHTML = `
-    <label>Duration</label><input class="duration" size="6" value="${t.duration}">
+    <label>Длит.</label><input class="duration" size="6" value="${t.duration}">
     `;
 
     root.addEventListener('click', () => {
