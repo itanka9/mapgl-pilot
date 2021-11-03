@@ -4,13 +4,15 @@ import { Map } from '@2gis/mapgl/types';
 import cameraPoint from './dot.svg';
 
 export function WaypointMarker(map: Map, mapgl: any) {
+    const markers: { [id: number]: mapgl.Marker } = {}
     store.on('waypointAdded', (wp: Waypoint) => {
         const marker = new mapgl.Marker(map, {
             icon: cameraPoint,
             size: [32, 32],
             anchor: [16,16],
-            coordinates: map.getCenter()
+            coordinates: wp.center
         });
-        wp.marker=marker;
+        markers[wp.id] = marker;
+        // wp.marker=marker;
     })
 }

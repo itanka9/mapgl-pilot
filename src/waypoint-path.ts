@@ -2,16 +2,15 @@ import { store } from './store';
 import { Waypoint } from './types';
 import { Map } from '@2gis/mapgl/types';
 
-
-export function WaypointPatch(map: Map, mapgl: any) {
+export function WaypointPath(map: Map, mapgl: any) {
+    const lines: { [id: number]: mapgl.Polyline } = {};
     store.on('waypointAdded', (wp: Waypoint) => {
         const wpPrev = store.getPrevWaypoint();
-        console.log('ap',wpPrev)
         if (wpPrev) {
             const line = new mapgl.Polyline(map, {
                 coordinates: [
-                    wpPrev.center.toArray(),
-                    wp.center.toArray()
+                    wpPrev.center,
+                    wp.center
                 ],
                 width: 2,
                 color: '#00b7ff',
@@ -19,8 +18,9 @@ export function WaypointPatch(map: Map, mapgl: any) {
                 gapLength: 3,
                 gapColor: '#ffffff39',
             });
-            wpPrev.line=line;
-            wp.line=line;
+            lines[wp.id] = line;
+            // wpPrev.line=line;
+            // wp.line=line;
         }
     })
 }
