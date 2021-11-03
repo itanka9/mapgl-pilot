@@ -1,10 +1,12 @@
+import { toSequence } from './datatypes/sequence';
 import { waypointEqual } from './datatypes/waypoint';
 import { Evented } from './evented';
-import { Waypoint, Transition } from './types';
+import { Waypoint, Transition, Command } from './types';
 
 interface StoreEvents {
     'waypointAdded': Waypoint,
     'transitionAdded': Transition,
+    'transitionChanged': Transition,
     'playbackState': PlaybackState,
     'titleChanged': string,
     'removeWaypoint': Element,
@@ -68,7 +70,7 @@ class Store extends Evented<StoreEvents> {
     serialize(): object {
         return {
             title: this.title,
-            waypoints: JSON.parse(JSON.stringify(this.waypoints))
+            commands: JSON.parse(JSON.stringify(this.waypoints)))
         }
     }
 
@@ -100,12 +102,26 @@ class Store extends Evented<StoreEvents> {
         return this.playbackState;
     }
 
+    getSequence (): Command[] {
+        return toSequence(this.waypoints);
+    }
+
     getPrevWaypoint(): Waypoint | undefined {
         const waypoints = this.waypoints.filter(el => el.type === 'waypoint')
         return waypoints[waypoints.length - 2] as Waypoint
     }
 
-    private addWaypoint(wp: Omit<Waypoint, 'id' | 'type'>) {
+    updateTransition (id: number, duration: number) {
+        const item = this.waypoints[id];
+        if (item.type !== 'transition') {
+            console.log('not transition', item);
+            return;
+        }
+        item.duration = duration;
+        this.emit('transitionChanged', item);
+    }
+
+    private addWaypoint (wp: Omit<Waypoint, 'id' | 'type'>) {
         const newWp: Waypoint = {
             type: 'waypoint',
             id: this.waypoints.length,
