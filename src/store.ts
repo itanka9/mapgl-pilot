@@ -1,24 +1,38 @@
 import { Evented } from './evented';
-import { Waypoint } from './types';
+import { Waypoint, Transition } from './types';
 
 interface StoreEvents  {
-    'waypointAdded': Waypoint
+    'waypointAdded': Waypoint,
+    'transitionAdded': Transition
 }
 
+type Element = Waypoint | Transition;
+
+// TODO: waypoints -> elements
 class Store extends Evented<StoreEvents> {
     
-    private waypoints: Waypoint[];
+    private waypoints: Element[];
 
     constructor () {
         super();
         this.waypoints = [];
     }
 
-    addWaypoint (wp: Omit<Waypoint, 'id'>): number {
-        const newWp = {
+    addWaypoint (wp: Omit<Waypoint, 'id' | 'type'>): number {
+        const newWp: Waypoint = {
+            type: 'waypoint',
             id: this.waypoints.length,
             ...wp
         };
+        if (this.waypoints.length > 0) {
+            const newT: Transition = {
+                type: 'transition',
+                id: newWp.id + 1,
+                duration: 5000
+            }
+            this.waypoints.push(newT);
+            this.emit('transitionAdded', newT);
+        }
         this.waypoints.push(newWp);
         this.emit('waypointAdded', newWp);
         return newWp.id;

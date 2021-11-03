@@ -1,22 +1,19 @@
 import { applyWaypoint, map } from '.';
+import { angleToString } from './datatypes/angle';
 import { Waypoint } from './types';
 
 export function WaypointCard(wp: Waypoint) {
     const root = document.createElement('div');
-    root.style.fontSize = '12px';
-    root.style.fontFamily = 'Helvetica, sans-serif';
-    root.style.padding = '3px';
-    root.style.borderBottom = 'solid 1px grey';
-    root.style.cursor = 'pointer';
+    root.classList.add('checkpoint');
     root.innerHTML = `
-        <span>${wp.center.join(', ')}</span>
-        <span>${wp.zoom}</span>
-        <span>${wp.rotation}</span>
-        <span>${wp.pitch}</span>
-        `
+        <label>Lnglat</label><input class="latng" size="12" value="${wp.center.toString()}">
+        <label>Rot</label><input class="rotation" size="4" value="${angleToString(wp.rotation)}">
+        <label>Pitch</label><input class="pitch" size="4" value="${angleToString(wp.pitch)}">
+    `;
 
     root.addEventListener('click', () => {
         applyWaypoint(map, wp);
-    })
+    });
+
     return root;
 }
