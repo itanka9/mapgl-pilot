@@ -70,7 +70,7 @@ class Store extends Evented<StoreEvents> {
     serialize(): object {
         return {
             title: this.title,
-            commands: JSON.parse(JSON.stringify(this.waypoints)))
+            waypoints: JSON.parse(JSON.stringify(this.waypoints)))
         }
     }
 
