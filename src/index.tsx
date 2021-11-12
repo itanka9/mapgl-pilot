@@ -9,12 +9,17 @@ import { WaypointMarker } from './waypoint-marker';
 import { WaypointPath } from './waypoint-path';
 import { ImportExport } from './import-export';
 import { StepControls } from './step-controls';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Welcome } from './react-test';
 
 
 export let map: Map;
 
 async function start() {
     const mapgl = await load();
+
+    ReactDOM.render(<Welcome name="раз два три" />, document.getElementById('test'));
 
     map = (window as any).map = new mapgl.Map('map', {
         key: '042b5b75-f847-4f2a-b695-b5f58adc9dfd',

@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
         "lib": ["dom", "es6"],
+        "jsx": "react",
+        "esModuleInterop": true
     },
     "typedocOptions": {
         "entryPoints": ["src/index.ts"],
